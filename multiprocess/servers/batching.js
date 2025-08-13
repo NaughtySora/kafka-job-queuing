@@ -44,6 +44,7 @@ module.exports = (producer, { topic, size = 1000, intension = 50 } = {}) => {
     async stop() {
       generator[Symbol.dispose]();
       await once(ee, "drain");
+      timer[Symbol.dispose]();
     },
   };
 };
