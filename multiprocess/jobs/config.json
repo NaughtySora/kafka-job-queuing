@@ -1,0 +1,25 @@
+{
+  "bootstrap": {
+    "kafka": {
+      "clientId": "root",
+      "brokers": [
+        "localhost:9092",
+        "localhost:9093",
+        "localhost:9094",
+        "localhost:9095"
+      ],
+      "retry": {
+        "initialRetryTime": 300,
+        "retries": 10,
+        "factor": 2
+      }
+    },
+    "consumers": {}
+  },
+  "topics": [
+    "transactions",
+    "sales",
+    "logs",
+    "third_party"
+  ]
+}

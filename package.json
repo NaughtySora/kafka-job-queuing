@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "scripts": {
+    "kafka-up": "docker compose up",
+    "kafka-down": "docker compose down",
+    "source": "cd ./multiprocess/servers && node --no-warnings index.js",
+    "process": "cd ./multiprocess/jobs && node --no-warnings index.js"
+  }
+}
