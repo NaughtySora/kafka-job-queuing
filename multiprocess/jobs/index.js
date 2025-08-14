@@ -16,14 +16,14 @@ const main = async () => {
 
   const exit = async () => {
     setTimeout(() => {
-      console.error('[servers]: root stopped with timeout');
+      console.error('[jobs]: root stopped with timeout');
       process.exit(0);
     }, 20000);
     await stop();
   };
 
   process.on('SIGINT', async () => {
-    console.log("SIGINT");
+    console.log("stopping jobs processing...");
     await exit();
     console.log("[jobs]: root stopped gracefully");
     process.exit(0);

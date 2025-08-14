@@ -9,9 +9,12 @@ const queue = [];
 
 const ee = new EventEmitter();
 
-module.exports = (producer, { topic, size = 1000, intension = 50 } = {}) => {
+module.exports = (producer, { topic, size = 1000, intensity = 50 } = {}) => {
   const timer = setTimeout(async () => {
-    if (queue.length === 0) ee.emit("drain");
+    if (queue.length === 0) {
+      ee.emit("drain");
+      return void timer.refresh();
+    }
     const messages = queue.splice(0, BATCH_SIZE);
     try {
       await producer.send({
@@ -38,7 +41,7 @@ module.exports = (producer, { topic, size = 1000, intension = 50 } = {}) => {
       });
     }
     generator.refresh();
-  }, intension);
+  }, intensity);
 
   return {
     async stop() {

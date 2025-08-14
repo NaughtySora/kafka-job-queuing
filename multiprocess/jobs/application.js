@@ -2,6 +2,7 @@
 
 const Consumer = require('../kafka/Consumer.js');
 const eachBatch = require('./eachBatch.js');
+const timers = require('node:timers/promises');
 
 const args = process.argv;
 const parameters = JSON.parse(args[2]);
@@ -13,6 +14,7 @@ const onError = async (error, message) => {
 
 const onProcess = async (message) => {
   console.log("Processing message", message.value.toString());
+  await timers.setTimeout(10);
 };
 
 (async () => {

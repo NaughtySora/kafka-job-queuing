@@ -3,38 +3,39 @@
 const { fork } = require("node:child_process");
 
 const JITTER = 1.75;
+const workers = new Map();
 
-const create = (workers, path, parameters, retry = 2000) => {
+const create = (path, parameters, retry = 2000) => {
   const worker = fork(path, [JSON.stringify(parameters)]);
   const pid = worker.pid;
   workers.set(pid, worker);
-  worker.on("exit", () => {
+  worker.once("exit", () => {
     console.log(`Worker ${pid} exited`);
   });
-  worker.on("error", (err) => {
+  worker.once("error", (err) => {
     console.error(`Worker ${pid} exited with error`, err);
     workers.delete(pid);
     setTimeout(() => {
-      create(workers, path, parameters, retry * JITTER);
+      create(path, parameters, retry * JITTER);
     }, retry);
   });
 };
 
-module.exports = (options) => {
-  const workers = new Map();
+module.exports = options => {
   for (const { path, parameters } of options) {
-    create(workers, path, parameters);
+    create(path, parameters);
   }
   return {
-    stop() { // timeout 
+    stop() {
       return new Promise((resolve, reject) => {
         try {
           let waiting = workers.size;
           for (const worker of workers.values()) {
-            worker.on("exit", () => {
+            worker.once("exit", () => {
               if (--waiting === 0) resolve();
             });
             worker.send({ status: "stop" });
+            workers.delete(worker.pid);
           }
         } catch (e) {
           reject(e);
