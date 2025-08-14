@@ -23,7 +23,7 @@ const main = async () => {
   };
 
   process.on('SIGINT', async () => {
-    console.log("SIGINT");
+    console.log("stopping servers...");
     await exit();
     console.log("[servers]: root stopped gracefully");
     process.exit(0);

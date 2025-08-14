@@ -21,17 +21,12 @@ module.exports = ({ limit, ping, onError, onProcess }) => async (options) => {
   };
   for (const message of batch.messages) {
     if (!isRunning() || isStale()) break;
-    const exec = async () => {
-      try {
-        await onProcess(message);
-      } catch (e) {
-        await onError(e, message);
-      } finally {
-        resolveOffset(message.offset);
-      }
-    };
-    promises.push(exec());
-    if (promises.length > limit) await commit();
+    promises.push(
+      onProcess(message)
+        .catch(e => onError(e, message))
+        .finally(() => resolveOffset(message.offset))
+    );
+    if (promises.length >= limit) await commit();
   }
   await commit();
   timer[Symbol.dispose]();

@@ -5,7 +5,6 @@ const { Kafka } = require("kafkajs");
 class Consumer {
   kafka = null;
   instance = null;
-  config = null;
 
   constructor(config) {
     this.kafka = new Kafka(config);
